@@ -43,6 +43,12 @@ func main() {
 	// Initialize configuration
 	cfg := config.Load()
 
+	// DEBUG: print DB connection info
+	log.Printf("DEBUG DATABASE_URL=%s", cfg.DatabaseURL)
+	log.Printf("DEBUG DB_HOST=%s DB_PORT=%s DB_USER=%s DB_NAME=%s", cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBName)
+	log.Printf("DEBUG RAW_ENV DATABASE_URL=%s", os.Getenv("DATABASE_URL"))
+	log.Printf("DEBUG RAW_ENV DB_HOST=%s", os.Getenv("DB_HOST"))
+
 	// Set Gin mode
 	gin.SetMode(cfg.GinMode)
 
