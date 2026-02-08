@@ -13,8 +13,18 @@ import (
 
 // Connect establishes a connection to the PostgreSQL database
 func Connect(cfg *config.Config) (*gorm.DB, error) {
-	dsn := cfg.DatabaseURL
-	if dsn == "" {
+	var dsn string
+	// Prefer individual DB_ env vars (more reliable with Coolify)
+	if cfg.DBHost != "" && cfg.DBHost != "localhost" {
+		dsn = fmt.Sprintf(
+			"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName,
+		)
+		log.Printf("Using individual DB env vars: host=%s dbname=%s", cfg.DBHost, cfg.DBName)
+	} else if cfg.DatabaseURL != "" {
+		dsn = cfg.DatabaseURL
+		log.Printf("Using DATABASE_URL")
+	} else {
 		dsn = fmt.Sprintf(
 			"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 			cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName,
